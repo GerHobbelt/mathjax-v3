@@ -1,6 +1,6 @@
 {
-  "name": "mathjax3",
-  "version": "0.1.0",
+  "name": "@gerhobbelt/mathjax3",
+  "version": "0.1.1-1",
   "description": "MathJax version 3 testbed",
   "main": "load.js",
   "devDependencies": {
