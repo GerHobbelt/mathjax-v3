@@ -22,25 +22,25 @@
  * @author dpvc@mathjax.org (Davide Cervone)
  */
 
-import {CHTMLWrapper} from '../Wrapper.js';
+import {CHTMLWrapper, CHTMLConstructor} from '../Wrapper.js';
+import {CommonSemantics, CommonSemanticsMixin} from '../../common/Wrappers/semantics.js';
 import {BBox} from '../BBox.js';
 import {MmlSemantics, MmlAnnotation, MmlAnnotationXML} from '../../../core/MmlTree/MmlNodes/semantics.js';
 import {MmlNode, XMLNode} from '../../../core/MmlTree/MmlNode.js';
 
 /*****************************************************************/
-/*
+/**
  * The CHTMLsemantics wrapper for the MmlSemantics object
  *
  * @template N  The HTMLElement node class
  * @template T  The Text node class
  * @template D  The Document class
  */
-export class CHTMLsemantics<N, T, D> extends CHTMLWrapper<N, T, D> {
+export class CHTMLsemantics<N, T, D> extends CommonSemanticsMixin<CHTMLConstructor<N, T, D>>(CHTMLWrapper) {
+
     public static kind = MmlSemantics.prototype.kind;
 
-    /*
-     * Only the first child of <semantics> is displayed
-     *
+    /**
      * @override
      */
     public toCHTML(parent: N) {
@@ -50,23 +50,11 @@ export class CHTMLsemantics<N, T, D> extends CHTMLWrapper<N, T, D> {
         }
     }
 
-    /*
-     * @override
-     */
-    public computeBBox(bbox: BBox) {
-        if (this.childNodes.length) {
-            const {w, h, d} = this.childNodes[0].getBBox();
-            bbox.w = w;
-            bbox.h = h;
-            bbox.d = d;
-        }
-    }
-
 }
 
 
 /*****************************************************************/
-/*
+/**
  * The CHTMLannotation wrapper for the MmlAnnotation object
  *
  * @template N  The HTMLElement node class
@@ -76,7 +64,7 @@ export class CHTMLsemantics<N, T, D> extends CHTMLWrapper<N, T, D> {
 export class CHTMLannotation<N, T, D> extends CHTMLWrapper<N, T, D> {
     public static kind = MmlAnnotation.prototype.kind;
 
-    /*
+    /**
      * @override
      */
     public toCHTML(parent: N) {
@@ -84,7 +72,7 @@ export class CHTMLannotation<N, T, D> extends CHTMLWrapper<N, T, D> {
         super.toCHTML(parent);
     }
 
-    /*
+    /**
      * @override
      */
     public computeBBox() {
@@ -95,7 +83,7 @@ export class CHTMLannotation<N, T, D> extends CHTMLWrapper<N, T, D> {
 }
 
 /*****************************************************************/
-/*
+/**
  * The CHTMLannotationXML wrapper for the MmlAnnotationXML object
  *
  * @template N  The HTMLElement node class
@@ -107,7 +95,7 @@ export class CHTMLannotationXML<N, T, D> extends CHTMLWrapper<N, T, D> {
 }
 
 /*****************************************************************/
-/*
+/**
  * The CHTMLxml wrapper for the XMLNode object
  *
  * @template N  The HTMLElement node class
@@ -119,14 +107,14 @@ export class CHTMLxml<N, T, D> extends CHTMLWrapper<N, T, D> {
 
     public static autoStyle = false;
 
-    /*
+    /**
      * @override
      */
     public toCHTML(parent: N) {
         this.adaptor.append(parent, this.adaptor.clone((this.node as XMLNode).getXML() as N));
     }
 
-    /*
+    /**
      * @override
      */
     public computeBBox() {
@@ -134,17 +122,17 @@ export class CHTMLxml<N, T, D> extends CHTMLWrapper<N, T, D> {
         return this.bbox;
     }
 
-    /*
+    /**
      * @override
      */
     protected getStyles() {}
 
-    /*
+    /**
      * @override
      */
     protected getScale() {}
 
-    /*
+    /**
      * @override
      */
     protected getVariant() {}

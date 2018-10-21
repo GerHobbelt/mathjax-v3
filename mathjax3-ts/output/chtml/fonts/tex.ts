@@ -21,9 +21,9 @@
  * @author dpvc@mathjax.org (Davide Cervone)
  */
 
-import {FontData, DelimiterData, CharData, CharOptions, DelimiterMap, CharMapMap, CSS, V, H} from '../FontData.js';
-import {StyleList, StyleData} from '../CssStyles.js';
-import {em} from '../../../util/lengths.js';
+import {DelimiterData, CharData, CharOptions, DelimiterMap, CharMapMap, CSS, V, H} from '../../common/FontData.js';
+import {CommonTeXFont} from '../../common/fonts/tex.js';
+import {StyleList, StyleData} from '../../common/CssStyles.js';
 import {OptionList, defaultOptions, userOptions} from '../../../util/Options.js';
 import {StringMap} from '../Wrapper.js';
 import {DIRECTION} from '../FontData.js';
@@ -53,38 +53,22 @@ import {texSize3} from './tex/tex-size3.js';
 import {texSize4} from './tex/tex-size4.js';
 import {texVariant} from './tex/tex-variant.js';
 
-import {delimiters} from './tex/delimiters.js';
+import {delimiters} from '../../common/fonts/tex/delimiters.js';
 
-/***********************************************************************************/
-/*
+/*=================================================================================*/
+/**
  *  The TeXFont class
  */
-export class TeXFont extends FontData {
+export class TeXFont extends CommonTeXFont {
 
-    /*
+    /**
      * Default options
      */
     public static OPTIONS = {
         fontURL: 'mathjax2/css/'
     };
 
-    /*
-     *  Add the extra variants for the TeX fonts
-     */
-    protected static defaultVariants = FontData.defaultVariants.concat([
-        ['-smallop', 'normal'],
-        ['-largeop', 'normal'],
-        ['-size3', 'normal'],
-        ['-size4', 'normal'],
-        ['-tex-caligraphic', 'italic'],
-        ['-tex-bold-caligraphic', 'bold-italic'],
-        ['-tex-oldstyle', 'normal'],
-        ['-tex-bold-oldstyle', 'bold'],
-        ['-tex-mathit', 'italic'],
-        ['-tex-variant', 'normal']
-    ]);
-
-    /*
+    /**
      * The classes to use for each variant
      */
     protected static defaultVariantClasses: StringMap = {
@@ -114,17 +98,12 @@ export class TeXFont extends FontData {
         '-tex-variant': 'mjx-v'
     };
 
-    /*
+    /**
      *  The stretchy delimiter data (incomplete at the moment)
      */
     protected static defaultDelimiters: DelimiterMap = delimiters;
 
-    /*
-     *  The default variants for the standard stretchy sizes
-     */
-    protected static defaultSizeVariants = ['normal', '-smallop', '-largeop', '-size3', '-size4'];
-
-    /*
+    /**
      *  The character data by variant
      */
     protected static defaultChars: CharMapMap = {
@@ -154,7 +133,8 @@ export class TeXFont extends FontData {
         '-tex-variant': texVariant
     };
 
-    /*
+    /*=====================================================*/
+    /**
      * The CSS styles needed for this font.
      */
     protected static defaultStyles = {
@@ -367,7 +347,8 @@ export class TeXFont extends FontData {
 
     protected options: OptionList;
 
-    /*
+    /*=====================================================================*/
+    /**
      * @override
      */
     constructor(options: OptionList = null) {
@@ -376,8 +357,13 @@ export class TeXFont extends FontData {
         this.options = userOptions(defaultOptions({}, CLASS.OPTIONS), options);
     }
 
+    /*=====================================================================*/
     /*
-     * @return{StyleList}  The (computed) styles for this font
+     * Handle creation of styles needed for this font
+     */
+
+    /**
+     * @return {StyleList}  The (computed) styles for this font
      *                     (could be used to limit styles to those actually used, for example)
      */
     get styles() {
@@ -407,8 +393,8 @@ export class TeXFont extends FontData {
         return styles;
     }
 
-    /*
-     * @param{StyleList} styles  The style list to add characters to
+    /**
+     * @param {StyleList} styles  The style list to add characters to
      */
     protected addVariantChars(styles: StyleList) {
         for (const name of Object.keys(this.variant)) {
@@ -423,10 +409,10 @@ export class TeXFont extends FontData {
         }
     }
 
-    /*
-     * @param{StyleList} styles    The style object to add styles to
-     * @param{StyleList} fonts     The default font-face directives with %%URL%% where the url should go
-     * @param{string} url          The actual URL to insert into the src strings
+    /**
+     * @param {StyleList} styles    The style object to add styles to
+     * @param {StyleList} fonts     The default font-face directives with %%URL%% where the url should go
+     * @param {string} url          The actual URL to insert into the src strings
      */
     protected addFontURLs(styles: StyleList, fonts: StyleList, url: string) {
         for (const name of Object.keys(fonts)) {
@@ -436,10 +422,15 @@ export class TeXFont extends FontData {
         }
     }
 
+    /*=====================================================*/
     /*
-     * @param{StyleList} styles    The style object to add styles to
-     * @param{number} n            The unicode character number of the delimiter
-     * @param{DelimiterData} data  The data for the delimiter whose CSS is to be added
+     *  Styles for stretchy characters
+     */
+
+    /**
+     * @param {StyleList} styles    The style object to add styles to
+     * @param {number} n            The unicode character number of the delimiter
+     * @param {DelimiterData} data  The data for the delimiter whose CSS is to be added
      */
     protected addDelimiterStyles(styles: StyleList, n: number, data: DelimiterData) {
         const c = this.char(n);
@@ -456,10 +447,15 @@ export class TeXFont extends FontData {
         }
     }
 
+    /*=====================================================*/
     /*
-     * @param{StyleList} styles    The style object to add styles to
-     * @param{string} c            The delimiter character string
-     * @param{DelimiterData} data  The data for the delimiter whose CSS is to be added
+     *  Styles for vertical stretchy characters
+     */
+
+    /**
+     * @param {StyleList} styles    The style object to add styles to
+     * @param {string} c            The delimiter character string
+     * @param {DelimiterData} data  The data for the delimiter whose CSS is to be added
      */
     protected addDelimiterVStyles(styles: StyleList, c: string, data: DelimiterData) {
         const [beg, ext, end, mid] = data.stretch;
@@ -487,12 +483,12 @@ export class TeXFont extends FontData {
         }
     }
 
-    /*
-     * @param{StyleList} styles  The style object to add styles to
-     * @param{string} c          The vertical character whose part is being added
-     * @param{string} part       The name of the part (beg, ext, end, mid) that is being added
-     * @param{number} n          The unicode character to use for the part
-     * @return{number}           The total height of the character
+    /**
+     * @param {StyleList} styles  The style object to add styles to
+     * @param {string} c          The vertical character whose part is being added
+     * @param {string} part       The name of the part (beg, ext, end, mid) that is being added
+     * @param {number} n          The unicode character to use for the part
+     * @return {number}           The total height of the character
      */
     protected addDelimiterVPart(styles: StyleList, c: string, part: string, n: number) {
         if (!n) return 0;
@@ -505,10 +501,15 @@ export class TeXFont extends FontData {
         return data[0] + data[1];
     }
 
+    /*=====================================================*/
     /*
-     * @param{StyleList} styles    The style object to add styles to
-     * @param{string} c            The delimiter character string
-     * @param{DelimiterData} data  The data for the delimiter whose CSS is to be added
+     *  Styles for horizontal stretchy characters
+     */
+
+    /**
+     * @param {StyleList} styles    The style object to add styles to
+     * @param {string} c            The delimiter character string
+     * @param {DelimiterData} data  The data for the delimiter whose CSS is to be added
      */
     protected addDelimiterHStyles(styles: StyleList, c: string, data: DelimiterData) {
         const [beg, ext, end, mid] = data.stretch;
@@ -521,11 +522,11 @@ export class TeXFont extends FontData {
         }
     }
 
-    /*
-     * @param{StyleList} styles  The style object to add styles to
-     * @param{string} c          The vertical character whose part is being added
-     * @param{string} part       The name of the part (beg, ext, end, mid) that is being added
-     * @param{number} n          The unicode character to use for the part
+    /**
+     * @param {StyleList} styles  The style object to add styles to
+     * @param {string} c          The vertical character whose part is being added
+     * @param {string} part       The name of the part (beg, ext, end, mid) that is being added
+     * @param {number} n          The unicode character to use for the part
      */
     protected addDelimiterHPart(styles: StyleList, c: string, part: string, n: number, force: boolean = false) {
         if (!n) {
@@ -541,11 +542,16 @@ export class TeXFont extends FontData {
         styles['.MJX-TEX mjx-stretchy-h[c="' + c + '"] mjx-' + part + ' mjx-c::before'] = css;
     }
 
+    /*=====================================================*/
     /*
-     * @param{StyleList} styles  The style object to add styles to
-     * @param{string} vclass     The variant class string (e.g., .mjx-b) where this character is being defined
-     * @param{number} n          The unicode character being defined
-     * @param{CharData} data     The bounding box data and options for the character
+     *  Utility functions
+     */
+
+    /**
+     * @param {StyleList} styles  The style object to add styles to
+     * @param {string} vclass     The variant class string (e.g., .mjx-b) where this character is being defined
+     * @param {number} n          The unicode character being defined
+     * @param {CharData} data     The bounding box data and options for the character
      */
     protected addCharStyles(styles: StyleList, vclass: string, n: number, data: CharData) {
         const [h, d, w, options] = data as [number, number, number, CharOptions];
@@ -571,22 +577,6 @@ export class TeXFont extends FontData {
                 width: this.em(w + options.ic)
             };
         }
-    }
-
-    /*
-     * @param{number} n  The number of ems
-     * @return{string}   The string representing the number with units of "em"
-     */
-    protected em(n: number) {
-        return em(n);
-    }
-
-    /*
-     * @param{number} n  The number of ems (will be restricted to non-negative values)
-     * @return{string}   The string representing the number with units of "em"
-     */
-    protected em0(n: number) {
-        return em(Math.max(0, n));
     }
 
 }

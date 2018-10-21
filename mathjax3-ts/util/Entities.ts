@@ -25,24 +25,24 @@ import {retryAfter} from './Retries.js';
 import {asyncLoad} from './AsyncLoad.js';
 import {userOptions, defaultOptions, OptionList} from './Options.js';
 
-/*
+/**
  * The type for lists of entities
  */
 export type EntityList = {[name: string]: string};
 
 
-/*
+/**
  *  Options controlling the process of conversion
  */
 export const options: OptionList = {
     loadMissingEntities: true           // True means load entity files dynamically if needed
 };
 
-/*
+/**
  *  The entity name-to-value translation table
  *  (basic math entities -- others are loaded from external files)
  */
-const entities: EntityList = {
+export const entities: EntityList = {
     ApplyFunction: '\u2061',
     Backslash: '\u2216',
     Because: '\u2235',
@@ -448,23 +448,23 @@ const entities: EntityList = {
     zigrarr: '\u21DD'
 };
 
-/*
+/**
  * The files that have been loaded
  */
 const loaded: {[name: string]: boolean} = {};
 
-/*
+/**
  * Used by entity files to add more entities to the table
  *
- * @param {EntityList} entities  The entities to add
+ * @param {EntityList} additions The entities to add
  * @param {string} file          The name of the file that they came from
  */
-export function add(entities: EntityList, file: string) {
-    Object.assign(entities, entities);
+export function add(additions: EntityList, file: string) {
+    Object.assign(entities, additions);
    loaded[file] = true;
 }
 
-/*
+/**
  * Used to remove an entity from the list, if needed
  *
  * @param {string} entity  The name of the entity to remove
@@ -473,7 +473,7 @@ export function remove(entity: string) {
     delete entities[entity];
 }
 
-/*
+/**
  * @param {string} text  The text whose entities are to be replaced
  * @return {string}      The text with entries replaced
  */
@@ -481,7 +481,7 @@ export function translate(text: string) {
     return text.replace(/&([a-z][a-z0-9]*|#(?:[0-9]+|x[0-9a-f]+));/ig, replace);
 }
 
-/*
+/**
  * Returns the unicode character for an entity, if found
  * If not, loads an entity file to see if it is there (and retries after loading)
  * Otherwire, returns the original entity string
@@ -507,9 +507,9 @@ function replace(match: string, entity: string) {
     return match;
 }
 
-/*
- * @param{string} entity  The character code point as a string
- * @return{srting}        The character(s) with the given code point
+/**
+ * @param {string} entity  The character code point as a string
+ * @return {srting}        The character(s) with the given code point
  */
 export function numeric(entity: string) {
     let n = (entity.charAt(0) === 'x' ?

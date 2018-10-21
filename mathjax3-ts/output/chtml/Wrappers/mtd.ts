@@ -22,13 +22,11 @@
  */
 
 import {CHTMLWrapper} from '../Wrapper.js';
-import {CHTMLWrapperFactory} from '../WrapperFactory.js';
-import {BBox} from '../BBox.js';
 import {MmlMtd} from '../../../core/MmlTree/MmlNodes/mtd.js';
-import {StyleList} from '../CssStyles.js';
+import {StyleList} from '../../common/CssStyles.js';
 
 /*****************************************************************/
-/*
+/**
  * The CHTMLmtd wrapper for the MmlMtd object
  *
  * @template N  The HTMLElement node class
@@ -36,6 +34,7 @@ import {StyleList} from '../CssStyles.js';
  * @template D  The Document class
  */
 export class CHTMLmtd<N, T, D> extends CHTMLWrapper<N, T, D> {
+
     public static kind = MmlMtd.prototype.kind;
 
     public static styles: StyleList = {
@@ -90,7 +89,7 @@ export class CHTMLmtd<N, T, D> extends CHTMLWrapper<N, T, D> {
         }
     };
 
-    /*
+    /**
      * @override
      */
     public toCHTML(parent: N) {
