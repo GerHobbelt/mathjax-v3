@@ -17,36 +17,30 @@
 
 
 /**
- * @fileoverview Configuration file for the Newcommand package.
+ * @fileoverview Configuration file for the NoErrors package.
  *
  * @author v.sorge@mathjax.org (Volker Sorge)
  */
 
 import {Configuration} from '../Configuration.js';
-import {BeginEnvItem} from './NewcommandItems.js';
-import './NewcommandMappings.js';
-
+import TexParser from '../TexParser.js';
+import {NodeFactory} from '../NodeFactory.js';
 
 /**
- * Init method for Newcommand package.
- * @param {Configuration} config The current configuration.
+ * Generates an error node containing the erroneous expression.
+ * @param {TexParser} parser The node factory.
+ * @param {string} message The error message (which is ignored).
+ * @param {string} id The error id (which is ignored).
+ * @param {string} expr The original LaTeX expression.
  */
-let init = function(config: Configuration) {
-  config.append(Configuration.extension());
+function noErrors(factory: NodeFactory,
+                  message: string, id: string, expr: string) {
+  let mtext = factory.create('token', 'mtext', {}, expr.replace(/\n/g, ' '));
+  let error = factory.create('node', 'merror', [mtext]);
+  return error;
 };
 
-
-export const NewcommandConfiguration = Configuration.create(
-  'newcommand',
-  {handler: {
-    macro: ['Newcommand-macros']
-  },
-   items: {
-     [BeginEnvItem.prototype.kind]: BeginEnvItem,
-   },
-   options: {maxMacros: 1000},
-   init: init
-  }
-);
+export const NoErrorsConfiguration = Configuration.create(
+  'noerrors', {nodes: {'error': noErrors}});
 
 
