@@ -45,6 +45,7 @@ if [ $# -eq 0 ]; then
     node load.js tests/parser-mhchem7-tests.js
     node load.js tests/parser-mhchem8-tests.js
     node load.js tests/parser-mhchem9-tests.js
+    node load.js tests/parser-autobold-tests.js
     exit 0
 else
     repeat=$1
